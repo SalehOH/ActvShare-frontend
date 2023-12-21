@@ -1,0 +1,1 @@
+export const ArbaicRegex = /[\u0600-\u06FF]/;
