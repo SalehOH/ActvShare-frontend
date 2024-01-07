@@ -1,10 +1,12 @@
 import React from "react";
-import Photo from "@/assets/react.svg";
+import { useLocation } from "react-router-dom";
+import Photo from "@/assets/ActvShare.png";
 import Profile from "./profile";
 import Search from "./search";
 import { Link, Outlet } from "react-router-dom";
 
 const index = () => {
+  const location = useLocation();
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
 
   React.useEffect(() => {
@@ -17,6 +19,10 @@ const index = () => {
     };
   }, []);
 
+  // Check if the URL is in the chat
+  const isChatUrl = location.pathname.includes("/chat");
+
+  if (isChatUrl) return <Outlet />;
   return (
     <div className="w-full">
       <div className="flex justify-center">
@@ -28,12 +34,9 @@ const index = () => {
               <Search windowWidth={windowWidth} />
             </div>
           )}
-
-          <div
-            className={`flex items-center ${windowWidth < 768 && "flex-grow"} `}
-          >
+          <div className={`flex items-center ${windowWidth < 768 && "flex-grow"} `}>
             <Link className="mx-auto" to="/">
-              <img src={Photo} alt="Image" className=" md:mx-0" />
+              <img src={Photo} alt="Image" className="h-14 w-14 md:mx-0" />
             </Link>
           </div>
           <div className="hidden md:flex flex-grow justify-center items-center mx-auto">

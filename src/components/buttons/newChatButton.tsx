@@ -1,17 +1,19 @@
 import { RiChatNewFill } from "react-icons/ri";
 import { Button } from "../ui/button";
+import { useDispatcher } from "@/hooks/useDispatcher";
+import { createChat, fetchChats } from "@/features/home/store/actions";
 
-type Props = {
-  onClick?: () => void;
-}
-const newChatButton = (props: Props) => {
+const newChatButton = ({ username }: { username: string }) => {
+  const dispatch = useDispatcher();
+
   return (
     <>
       <Button
-        className=" bg-gray-900 hover:bg-white hover:text-black text-lg rounded-xl"
-        onClick={props.onClick}
-        type="button"
-      >
+        className=" bg-gray-900 md:hover:bg-white md:hover:text-black text-md md:text-lg rounded-xl border-0"
+        variant="outline"
+        onClick={() => dispatch(createChat(username)).then(() => dispatch(fetchChats()))}
+        size="icon"
+        type="button">
         <RiChatNewFill />
       </Button>
     </>

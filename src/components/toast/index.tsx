@@ -2,7 +2,7 @@ import React from "react";
 import * as ToastPrimitive from "@radix-ui/react-toast";
 
 export const Toast = React.forwardRef((props, forwardedRef) => {
-  const { children, ...toastProps } = props;
+  const { children, ...toastProps } = props as { children: React.ReactNode };
   const [count, setCount] = React.useState(0);
 
   React.useImperativeHandle(forwardedRef, () => ({

@@ -1,52 +1,19 @@
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { MdPersonAdd } from "react-icons/md";
-import { user } from "../navbar/search";
-import { useState } from "react";
+import { useDispatcher } from "@/hooks/useDispatcher";
+import { follow } from "@/features/home/store/actions";
+import { toggleFollow } from "@/features/home/store";
 
-const url = import.meta.env.VITE_API_URL;
-
-const followButton = (props: {
-  setIsFollowing?: Function;
-  username: string;
-  searchUser?: user;
-}) => {
-  const isFollowing = props.setIsFollowing;
-  const username = props.username;
-  const token = JSON.parse(localStorage.getItem("user") ?? "{}")["token"];
-  const searchUser = props.searchUser;
-  const [Followed, setFollowed] = useState(searchUser?.isFollowed);
-
-  const handleFollow = async () => {
-    try {
-      await axios.post(
-        url + "account/follow/" + username,
-        {},
-        {
-          headers: {
-            authorization: "Bearer " + token,
-          },
-        }
-      );
-      isFollowing && isFollowing(true);
-      searchUser && setFollowed(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const followButton = ({ username }: { username: string }) => {
+  const dispatch = useDispatcher();
   return (
-    <>
-      {!Followed&& (
-        <Button
-          onClick={handleFollow}
-          variant="outline"
-          size="icon"
-          className="bg-gray-900 border-0 text-xs md:text-2xl rounded-xl mr-2"
-        >
-          <MdPersonAdd />
-        </Button>
-      )}
-    </>
+    <Button
+      onClick={() => dispatch(follow(username)).then(() => dispatch(toggleFollow({ username, type: "follow" })))}
+      variant="outline"
+      size="icon"
+      className="bg-gray-900 border-0 text-md md:text-2xl rounded-xl mr-2">
+      <MdPersonAdd />
+    </Button>
   );
 };
 

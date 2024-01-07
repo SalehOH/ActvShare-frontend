@@ -1,35 +1,21 @@
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { MdPersonRemoveAlt1 } from "react-icons/md";
+import { useDispatcher } from "@/hooks/useDispatcher";
+import { unfollow } from "@/features/home/store/actions";
+import { toggleFollow } from "@/features/home/store";
 
-
-const url = import.meta.env.VITE_API_URL; 
-const unfollowButton = (props: {setIsFollowing?: Function, username: string}) => {
-
-  const isFollowing = props.setIsFollowing;
-  const username = props.username;
-  
-  const handleUnfollow = async () => {
-    try{
-      const res = await axios.post(url + "account/unfollow/" + username, {}, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")??"")["token"]}`,
-        }
-      } )
-      console.log(res)
-      isFollowing && isFollowing(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+const unfollowButton = ({ username }: { username: string }) => {
+  const dispatch = useDispatcher();
+  const handleCLick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    dispatch(unfollow(username)).then(() => dispatch(toggleFollow({ username, type: "unfollow" })));
+  };
   return (
     <Button
-      onClick={handleUnfollow}
+      onClick={handleCLick}
       variant="outline"
       size="icon"
-      className="bg-gray-900 border-0 text-2xl rounded-xl mr-2"
-    >
+      className="bg-gray-900 border-0 text-md md:text-2xl rounded-xl mr-2">
       <MdPersonRemoveAlt1 />
     </Button>
   );

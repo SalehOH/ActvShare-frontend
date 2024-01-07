@@ -3,49 +3,47 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserContext } from "@/hooks/useUserContext";
+import { HiUserCircle } from "react-icons/hi2";
 import { Link } from "react-router-dom";
+import { useUser } from "@/hooks/useUser";
+import { logoutUser } from "@/features/authentication/store/actions";
+import { useDispatcher } from "@/hooks/useDispatcher";
+import { useState } from "react";
 
 const url = import.meta.env.VITE_IMAGE_URL;
 
 const profile = () => {
-  const { user } = useUserContext();
+  const user = useUser();
+  const dispatch = useDispatcher();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    window.location.reload();
+    dispatch(logoutUser());
   };
 
+  const closeMenu = () => {
+    setOpen(false);
+  };
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="mr-2">
-        <img
-          className="h-8 w-8 rounded-full "
-          src={
-            user != null
-              ? `${url}${user?.profilePicture}`
-              : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-          }
-          alt=""
-        />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {user != null ? (
-          <div className="text-black">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="font-medium cursor-pointer w-full"
-            >
-              Logout
-            </DropdownMenuItem>
-          </div>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className=" rounded-full">
+        {user ? (
+          <img className="h-8 w-8 rounded-full " src={url + user?.profilePicture} alt="" />
         ) : (
-          <Link to="/auth/login" >
+          <div className="text-3xl">
+            <HiUserCircle />
+          </div>
+        )}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="bg-gray-900 border-0">
+        {user != null ? (
+          <DropdownMenuItem onClick={handleLogout} className="font-semibold cursor-pointer w-full text-white">
+            Logout
+          </DropdownMenuItem>
+        ) : (
+          <Link to="/auth/login" className="font-semibold cursor-pointer w-full text-white" onClick={closeMenu}>
             <DropdownMenuLabel>Login</DropdownMenuLabel>
           </Link>
         )}
